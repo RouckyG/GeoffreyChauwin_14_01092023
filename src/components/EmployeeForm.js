@@ -20,8 +20,6 @@ const EmployeeForm = () => {
 	const [startDate, setStartDate] = useState("");
 	const [department, setDepartment] = useState("");
 	const [validated, setValidated] = useState(false);
-	const [openModal, setOpenModal] = useState(false);
-	const [messageModal, setMessageModal] = useState("");
 
     const [displayModal, setDisplayModal] = useState(false);
 
