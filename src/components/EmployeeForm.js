@@ -1,12 +1,13 @@
 import React, { useState }  from "react";
 import {Form, Row, Col, Button} from "react-bootstrap";
 import STATES from "../data/States.json";
+import Modal from "./Modal/Modal";
 
 const EmployeeForm = () => {
 
 	// const dispatch = useDispatch();
-	const dateToday = new Date();
-	const yearToday = dateToday.getFullYear();
+	const actualDate = new Date();
+	const actualYear = actualDate.getFullYear();
 
 	// Hook states declaration & initialisation
 	const [firstName, setFirstName] = useState("");
@@ -22,6 +23,8 @@ const EmployeeForm = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const [messageModal, setMessageModal] = useState("");
 
+    const [displayModal, setDisplayModal] = useState(false);
+
 	// The object values retrieved from the form
 	const inputValue = {
 		firstName,
@@ -36,7 +39,7 @@ const EmployeeForm = () => {
 	};
 
 	// The object values resetted to clear the form
-	function resetInputValues() {
+	const resetInputValues = () => {
 		setFirstName("");
 		setLastName("");
 		setBirthDate("");
@@ -49,13 +52,13 @@ const EmployeeForm = () => {
 	}
 
     const checkForm = (data) => {
-        const dateToday = new Date();
-        const yearToday = dateToday.getFullYear();
+        const actualDate = new Date();
+        const actualYear = actualDate.getFullYear();
         const yearBirthDate = data.birthdate.slice(0, 4);
         const yearStartDate = data.startdate.slice(0, 4);
         let message = "";
     
-        !(yearToday - yearBirthDate > 14)
+        !(actualYear - yearBirthDate > 14)
             ? (message = "Birth date must be at least 15 years behind")
             : !(yearStartDate - yearBirthDate > 14)
             ? (message = "Start date must be at least 15 years after birthDate")
@@ -65,15 +68,27 @@ const EmployeeForm = () => {
     }
 
     const handleSubmit = (e) => {
+        e.preventDefault();
         const form = e.currentTarget;
-        console.log(form)
+        
         if (form.checkValidity() === false) {
-          e.preventDefault();
           e.stopPropagation();
         }
-    
-        setValidated(true);
+        else{
+            resetInputValues();
+            setDisplayModal(true);
+            setValidated(true);
+        }
     }    
+	// const handleSubmit = (e) => {
+
+    // 	setValidated(true);
+	// 	inputResult = checkForm(inputValue);
+	// 	if (inputResult === "Employee successfully created !") {
+	// 		// dispatch(addEmployee(inputValue));
+	// 		setValidated(false);
+	// 	}
+	// }
 
     return <>
         <Form
@@ -123,8 +138,8 @@ const EmployeeForm = () => {
                         value={birthDate}
                         id="birthdatemin"
                         name="birthdatemin"
-                        min={yearToday - 100 + "-01-01"}
-                        max={yearToday - 15 + "-12-31"}
+                        min={actualYear - 100 + "-01-01"}
+                        max={actualYear - 15 + "-12-31"}
                     />
                     <Form.Control.Feedback type="invalid">
                         must be min 15 and max 100 years old
@@ -210,11 +225,11 @@ const EmployeeForm = () => {
                         value={startDate}
                         id="startdatemin"
                         name="startdatemin"
-                        min={yearToday - 50 + "-01-01"}
-                        max={yearToday + "-12-31"}
+                        min={birthDate}
+                        // max={actualYear + "-12-31"}
                     />
                     <Form.Control.Feedback type="invalid">
-                        must be max 50 years behind
+                        must be after the birthdate
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Col>
@@ -240,7 +255,9 @@ const EmployeeForm = () => {
                 Submit
             </Button>
         </Form>
-
+        <Modal display={displayModal} onClose={()=>{setDisplayModal(false)}}>
+            Employee successfully created !
+        </Modal>
     </>
 }
 
