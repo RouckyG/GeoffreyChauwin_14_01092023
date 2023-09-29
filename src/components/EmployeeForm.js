@@ -1,17 +1,28 @@
-import React, { useState }  from "react";
+import React, { useEffect, useState }  from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {Form, Row, Col, Button} from "react-bootstrap";
 import STATES from "../data/States.json";
 import Modal from "./Modal/Modal";
+import { addEmployee, loadEmployees } from "../redux/employee";
+import EMPLOYEEDATA from "../data/Employee.json";
+
 
 const EmployeeForm = () => {
 
-	// const dispatch = useDispatch();
+    const employees = useSelector((state) => state.employee);
+    const dispatch = useDispatch();
+
+    if(employees.employeeList.length === 0){
+        dispatch(loadEmployees({ employeeList: EMPLOYEEDATA }));
+    }
+
+    // const dispatch = useDispatch();
 	const actualDate = new Date();
 	const actualYear = actualDate.getFullYear();
 
 	// Hook states declaration & initialisation
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
+	const [first_name, setFirstName] = useState("");
+	const [last_name, setLastName] = useState("");
 	const [birthDate, setBirthDate] = useState("");
 	const [street, setStreet] = useState("");
 	const [city, setCity] = useState("");
@@ -25,8 +36,8 @@ const EmployeeForm = () => {
 
 	// The object values retrieved from the form
 	const inputValue = {
-		firstName,
-		lastName,
+		first_name,
+		last_name,
 		birthDate,
 		street,
 		city,
@@ -73,20 +84,12 @@ const EmployeeForm = () => {
           e.stopPropagation();
         }
         else{
+            dispatch(addEmployee(inputValue))
             resetInputValues();
             setDisplayModal(true);
             setValidated(true);
         }
     }    
-	// const handleSubmit = (e) => {
-
-    // 	setValidated(true);
-	// 	inputResult = checkForm(inputValue);
-	// 	if (inputResult === "Employee successfully created !") {
-	// 		// dispatch(addEmployee(inputValue));
-	// 		setValidated(false);
-	// 	}
-	// }
 
     return <>
         <Form
@@ -103,7 +106,7 @@ const EmployeeForm = () => {
                         type="text"
                         placeholder="First name"
                         onChange={(e) => setFirstName(e.target.value)}
-                        value={firstName}
+                        value={first_name}
                         pattern="^[( )a-zA-Z_-éèàêôâîûüù-]{2,50}$"
                     />
                     <Form.Control.Feedback type="invalid">
@@ -117,7 +120,7 @@ const EmployeeForm = () => {
                         type="text"
                         placeholder="Last name"
                         onChange={(e) => setLastName(e.target.value)}
-                        value={lastName}
+                        value={last_name}
                         pattern="^[( )a-zA-Z_éèàêôâîûüù-]{2,50}$"
                     />
                     <Form.Control.Feedback type="invalid">
@@ -224,7 +227,6 @@ const EmployeeForm = () => {
                         id="startdatemin"
                         name="startdatemin"
                         min={birthDate}
-                        // max={actualYear + "-12-31"}
                     />
                     <Form.Control.Feedback type="invalid">
                         must be after the birthdate
