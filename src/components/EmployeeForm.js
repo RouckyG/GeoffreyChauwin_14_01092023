@@ -2,10 +2,9 @@ import React, { useEffect, useState }  from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {Form, Row, Col, Button} from "react-bootstrap";
 import STATES from "../data/States.json";
-import Modal from "./Modal/Modal";
+import {Modal} from "modal_react_plugin_p14";
 import { addEmployee, loadEmployees } from "../redux/employee";
 import EMPLOYEEDATA from "../data/Employee.json";
-
 
 const EmployeeForm = () => {
 
