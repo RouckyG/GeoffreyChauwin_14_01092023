@@ -64,13 +64,14 @@ const EmployeeForm = () => {
         const form = e.currentTarget;
         
         if (form.checkValidity() === false) {
-          e.stopPropagation();
+            setValidated(true);
+            e.stopPropagation();
         }
         else{
             dispatch(addEmployee(inputValue))
-            setDisplayModal(true);
-            setValidated(true);
             resetInputValues();
+            setDisplayModal(true);
+            setValidated(false);
         }
     }    
 
