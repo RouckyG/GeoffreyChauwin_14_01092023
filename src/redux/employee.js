@@ -11,9 +11,12 @@ const employeeSlice = createSlice({
 			state.employeeList = [];
 			payload.employeeList.map((elt) => state.employeeList.push(elt));
 		},
+		updateEmployees: (state, { payload }) => {
+			state.employeeList = [...payload.employeeList]
+		}
   },
 })
 
-export const { addEmployee, loadEmployees } = employeeSlice.actions
+export const { addEmployee, loadEmployees, updateEmployees } = employeeSlice.actions
 
 export default employeeSlice.reducer

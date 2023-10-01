@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import {
@@ -6,24 +6,81 @@ import {
     useReactTable,
     getCoreRowModel,
     getPaginationRowModel,
+    getFilteredRowModel,
+    getSortedRowModel,
 } from '@tanstack/react-table'
 import {Table as BTable} from "react-bootstrap";
 
-import { loadEmployees } from "../redux/employee";
+import { loadEmployees, updateEmployees } from "../redux/employee";
 import EMPLOYEEDATA from "../data/Employee.json";
 
 const EmployeeList = () => {
 
     const employees = useSelector((state) => state.employee);
-    
     const dispatch = useDispatch();
 
     if(employees.employeeList.length === 0){
         dispatch(loadEmployees({ employeeList: EMPLOYEEDATA }));
     }
 
-    console.log("employees2",employees)
+    const [sorting, setSorting] = useState({
+        sortedColumn: null,
+        isSortedDesc: false,
+    });
     
+    const handleColumnHeaderClick = (accessorKey) => {
+        // If clicking on the same column, toggle sort order
+        const isSortedDesc =
+            sorting.sortedColumn === accessorKey ? !sorting.isSortedDesc : false;
+      
+        // Update the sorting state
+        setSorting({
+            sortedColumn: accessorKey,
+            isSortedDesc,
+        });
+      
+        sortData(accessorKey, isSortedDesc);
+    };
+
+    const sortData = (columnId, isSortedDesc) => {
+        // Create a copy of the employeeList array to avoid mutating the original data
+        const sortedData = [...employees.employeeList];
+      
+        // Define a sorting function based on the column and sort order
+        const sortingFunction = (a, b) => {
+            const valueA = a[columnId];
+            const valueB = b[columnId];
+      
+          // Compare the values based on data type (Date)
+        if (columnId === "startDate" || columnId === "birthDate") {
+            // Parse dates and compare
+            const dateA = new Date(valueA);
+            const dateB = new Date(valueB);
+      
+            if (isSortedDesc) {
+                return dateB - dateA;
+            } else {
+                return dateA - dateB;
+            }
+        }
+          // Compare the values based on data type (string or number)
+
+        if (typeof valueA === 'string' && typeof valueB === 'string') {
+            return isSortedDesc ? valueB.localeCompare(valueA) : valueA.localeCompare(valueB);
+        } else if (typeof valueA === 'number' && typeof valueB === 'number') {
+            return isSortedDesc ? valueB - valueA : valueA - valueB;
+        }
+      
+            return 0; // Default: no sorting
+        };
+      
+        // Sort the data using the sorting function
+        sortedData.sort(sortingFunction);
+      
+        // Update the state with the sorted data
+        dispatch(updateEmployees({ employeeList: sortedData }));
+    };
+      
     const columns = [
         {
             header: "First Name",
@@ -62,17 +119,20 @@ const EmployeeList = () => {
             accessorKey: "zipCode",
         },
     ]
+
     const table = useReactTable({
         columns,
         data: employees.employeeList,
         getCoreRowModel : getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
     })
     
     return (employees.employeeList.length > 0 && <main>
         <div id="employee-div" className="container">
             <h1>Current Employees</h1>
-            <div className="flex items-center gap-2">
+            <div>
                 <select
                     value={table.getState().pagination.pageSize}
                     onChange={e => {
@@ -89,10 +149,25 @@ const EmployeeList = () => {
             <BTable striped bordered hover responsive size="sm">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
-                        {headerGroup.headers.map((header)=>(
-                            <th key={header.id}>
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                            </th>
+                        {headerGroup.headers.map((header) => (
+                        <th
+                            key={header.id}
+                            onClick={() => handleColumnHeaderClick(header.column.id)}
+                            className={`cursor-pointer ${
+                            sorting.sortedColumn === header.column.id
+                                ? sorting.isSortedDesc
+                                ? "desc"
+                                : "asc"
+                                : ""
+                            }`}
+                        >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {sorting.sortedColumn === header.column.id && (
+                                <span className="ml-1">
+                                    {sorting.isSortedDesc ? "🔽" : "🔼"}
+                                </span>
+                            )}
+                        </th>
                         ))}
                     </tr>
                 ))}
