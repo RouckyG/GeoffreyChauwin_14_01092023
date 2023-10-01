@@ -1,4 +1,4 @@
-import React, { useEffect, useState }  from "react";
+import React, { useState }  from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {Form, Row, Col, Button} from "react-bootstrap";
 import STATES from "../data/States.json";
@@ -59,22 +59,6 @@ const EmployeeForm = () => {
 		setDepartment("");
 	}
 
-    const checkForm = (data) => {
-        const actualDate = new Date();
-        const actualYear = actualDate.getFullYear();
-        const yearBirthDate = data.birthdate.slice(0, 4);
-        const yearStartDate = data.startdate.slice(0, 4);
-        let message = "";
-    
-        !(actualYear - yearBirthDate > 14)
-            ? (message = "Birth date must be at least 15 years behind")
-            : !(yearStartDate - yearBirthDate > 14)
-            ? (message = "Start date must be at least 15 years after birthDate")
-            : (message = "Employee successfully created !");
-    
-        return message;
-    }
-
     const handleSubmit = (e) => {
         e.preventDefault();
         const form = e.currentTarget;
@@ -84,9 +68,9 @@ const EmployeeForm = () => {
         }
         else{
             dispatch(addEmployee(inputValue))
-            resetInputValues();
             setDisplayModal(true);
             setValidated(true);
+            resetInputValues();
         }
     }    
 
