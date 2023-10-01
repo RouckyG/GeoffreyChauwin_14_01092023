@@ -147,30 +147,32 @@ const EmployeeList = () => {
                 </select>
             </div>
             <BTable striped bordered hover responsive size="sm">
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
-                        <th
-                            key={header.id}
-                            onClick={() => handleColumnHeaderClick(header.column.id)}
-                            className={`cursor-pointer ${
-                            sorting.sortedColumn === header.column.id
-                                ? sorting.isSortedDesc
-                                ? "desc"
-                                : "asc"
-                                : ""
-                            }`}
-                        >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {sorting.sortedColumn === header.column.id && (
-                                <span className="ml-1">
-                                    {sorting.isSortedDesc ? "🔽" : "🔼"}
-                                </span>
-                            )}
-                        </th>
-                        ))}
-                    </tr>
-                ))}
+                <thead>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <tr key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => (
+                            <th
+                                key={header.id}
+                                onClick={() => handleColumnHeaderClick(header.column.id)}
+                                className={`cursor-pointer ${
+                                sorting.sortedColumn === header.column.id
+                                    ? sorting.isSortedDesc
+                                    ? "desc"
+                                    : "asc"
+                                    : ""
+                                }`}
+                            >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                {sorting.sortedColumn === header.column.id && (
+                                    <span className="ml-1">
+                                        {sorting.isSortedDesc ? "🔽" : "🔼"}
+                                    </span>
+                                )}
+                            </th>
+                            ))}
+                        </tr>
+                    ))}
+                </thead>
                 <tbody>
                     {
                         table.getRowModel().rows.map(row=>(
