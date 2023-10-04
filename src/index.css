@@ -36,6 +36,45 @@ label {
   margin-top: 10px;
 }
 
+.tableSettings {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.tableSettings>select {
+border-radius: 2px;
+}
+
+.tableSettings>input {
+  border-radius: 2px;
+  }
+
+.tablePagination {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.tablePaginationButtons {
+  display: flex;
+  align-items: center;
+}
+
+.tablePaginationButtons > button {
+  width: 35px;
+  margin-right: 5px;
+}
+
+.tablePage {
+  border: 1px solid gray;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #fff 0%, #dcdcdc 100%);
+  padding: 0.25em 1em;
+  margin-right: 5px;
+}
+
 table {
   border: 1px solid lightgray;
 }

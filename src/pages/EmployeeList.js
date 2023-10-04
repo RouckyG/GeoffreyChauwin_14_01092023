@@ -148,7 +148,7 @@ const EmployeeList = () => {
     return (employees.employeeList.length > 0 && <main>
         <div id="employee-div" className="container">
             <h1>Current Employees</h1>
-            <div>
+            <div className="tableSettings">
                 <select
                     value={table.getState().pagination.pageSize}
                     onChange={e => {
@@ -208,41 +208,49 @@ const EmployeeList = () => {
                     }
                 </tbody>
             </BTable>
-            <div className="flex items-center gap-2">
+            <div className="tablePagination">
                 <span className="flex items-center gap-1">
-                    <div>{'Showing page : '}
-                        {table.getState().pagination.pageIndex + 1} of{' '}
-                        {table.getPageCount()}
+                    <div>{'Showing entries : '}
+                        {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to {' '}
+                        {table.getState().pagination.pageSize * (table.getState().pagination.pageIndex + 1)}
                     </div>
                 </span>
-                <button
-                    className="border rounded p-1"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    {'<<'}
-                </button>
-                <button
-                    className="border rounded p-1"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    {'<'}
-                </button>
-                <button
-                    className="border rounded p-1"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    {'>'}
-                </button>
-                <button
-                    className="border rounded p-1"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
-                >
-                    {'>>'}
-                </button>
+                <div className="tablePaginationButtons">
+                    <button
+                        className="border rounded p-1"
+                        onClick={() => table.setPageIndex(0)}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        {'<<'}
+                    </button>
+                    <button
+                        className="border rounded p-1"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        {'<'}
+                    </button>
+                    
+                <span className="flex items-center gap-1">
+                    <div className="tablePage">
+                       {table.getState().pagination.pageIndex + 1}
+                    </div>
+                </span>
+                    <button
+                        className="border rounded p-1"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        {'>'}
+                    </button>
+                    <button
+                        className="border rounded p-1"
+                        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        {'>>'}
+                    </button>
+                </div>
             </div>
             <NavLink to="/createemployee">
                 <p>Home</p>
