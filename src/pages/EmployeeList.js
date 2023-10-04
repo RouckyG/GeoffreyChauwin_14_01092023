@@ -27,7 +27,10 @@ const EmployeeList = () => {
         sortedColumn: null,
         isSortedDesc: false,
     });
-    
+
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
+
     const handleColumnHeaderClick = (accessorKey) => {
         // If clicking on the same column, toggle sort order
         const isSortedDesc =
@@ -80,6 +83,19 @@ const EmployeeList = () => {
         // Update the state with the sorted data
         dispatch(updateEmployees({ employeeList: sortedData }));
     };
+
+    const handleSearch = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearchQuery(query);
+        const filteredData = employees.employeeList.filter((employee) => {
+          return columns.some((column) => {
+            const cellValue = String(employee[column.accessorKey]).toLowerCase();
+            return cellValue.includes(query);
+          });
+        });
+        // Update the filtered data
+        setFilteredData(filteredData);
+      };
       
     const columns = [
         {
@@ -122,7 +138,7 @@ const EmployeeList = () => {
 
     const table = useReactTable({
         columns,
-        data: employees.employeeList,
+        data: filteredData ? filteredData : employees.employeeList,
         getCoreRowModel : getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -145,6 +161,11 @@ const EmployeeList = () => {
                         </option>
                     ))}
                 </select>
+                <input
+                    type="text"
+                    placeholder="Search"
+                    onChange={(e) => handleSearch(e)}
+                />
             </div>
             <BTable striped bordered hover responsive size="sm">
                 <thead>
