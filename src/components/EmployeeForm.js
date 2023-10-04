@@ -7,7 +7,6 @@ import { addEmployee, loadEmployees } from "../redux/employee";
 import EMPLOYEEDATA from "../data/Employee.json";
 
 const EmployeeForm = () => {
-
     const employees = useSelector((state) => state.employee);
     const dispatch = useDispatch();
 
@@ -30,6 +29,7 @@ const EmployeeForm = () => {
 	const [startDate, setStartDate] = useState("");
 	const [department, setDepartment] = useState("");
 	const [validated, setValidated] = useState(false);
+    console.log(startDate)
 
     const [displayModal, setDisplayModal] = useState(false);
 
@@ -210,7 +210,8 @@ const EmployeeForm = () => {
                         value={startDate}
                         id="startdatemin"
                         name="startdatemin"
-                        min={birthDate}
+                        min={"1990-01-01" || birthDate}
+                        max={"2050-12-31"}
                     />
                     <Form.Control.Feedback type="invalid">
                         must be after the birthdate
