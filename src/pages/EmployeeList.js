@@ -29,7 +29,7 @@ const EmployeeList = () => {
     });
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [filteredData, setFilteredData] = useState([]);
+    const [filteredData, setFilteredData] = useState();
 
     const handleColumnHeaderClick = (accessorKey) => {
         // If clicking on the same column, toggle sort order
